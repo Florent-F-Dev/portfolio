@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post
+{% endblock %}
+
+{% block body %}
+	<h1>Post</h1>
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center g-5">
+		{% for i in 1..6 %}
+			<div class="col">
+				<div class="card">
+					<img src="https://picsum.photos/id/23{{i}}/400/300" class="card-img-top" alt="...">
+					<div class="card-body">
+						<h5 class="card-title">Card title</h5>
+						<p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium totam, dignissimos reiciendis eius facere repellendus.</p>
+						<a href="#" class="btn btn-primary">Visiter le site</a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
