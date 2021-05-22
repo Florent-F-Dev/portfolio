@@ -5,22 +5,20 @@
 
 {% block body %}
 	<h1>Post</h1>
-	<div class="container">
-		<div class="row">
-			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center g-5">
-				{% for i in 1..6 %}
-					<div class="col">
-						<div class="card text-dark">
-							<img src="https://picsum.photos/id/23{{i}}/400/300" class="card-img-top" alt="Image">
-							<div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-								<a href="#" class="btn btn-primary">Go somewhere</a>
-							</div>
+	<div class="row">
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center g-5">
+			{% for p in posts %}
+				<div class="col">
+					<div class="card">
+						<img src="{{ p.photo }}" class="card-img-top" alt="Image">
+						<div class="card-body">
+							<h5 class="card-title">{{ p.title }}</h5>
+							<p class="card-text">{{ p.description }}</p>
+							<a href="{{ p.link }}" class="btn btn-primary">Visiter le site</a>
 						</div>
 					</div>
-				{% endfor %}
-			</div>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 {% endblock %}
