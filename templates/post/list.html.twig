@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Liste des posts
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des posts</h1>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th scope="col">Id</th>
+				<th scope="col">Titre</th>
+				<th scope="col">Description</th>
+				<th scope="col">Lien</th>
+				<th scope="col">Photo</th>
+				<th></th>
+			</tr>
+		</thead>
+		{% for p in posts %}
+			<tbody>
+				<tr class="table">
+					<td>{{ p.id }}</td>
+					<td>{{ p.title }}</td>
+					<td>{{ p.description }}</td>
+					<td>{{ p.link }}</td>
+					<td>{{ p.photo }}</td>
+					<td>
+						<a href="{{ path('post_edit', {'id': p.id}) }}" class="btn btn-primary">Modifier</a>
+					</td>
+				</tr>
+			</tbody>
+		{% endfor %}
+	</table>
+{% endblock %}

@@ -1,3 +1,11 @@
 .full{
     min-height: 80vh;
 }
+.zoom:hover{
+    transform: scale(1.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0px 20px rgb(155, 155, 155);
+}
+.zoom{
+    transition: transform 0.3s, box-shadow 0.3s;
+}

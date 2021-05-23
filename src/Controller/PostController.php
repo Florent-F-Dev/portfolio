@@ -36,7 +36,8 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/add", name="post_add")
+     * @Route("/admin/post/add", name="post_add")
+     * @IsGranted("ROLE_ADMIN", message="Not found")
      */
     public function add(Request $request, EntityManagerInterface $em)
     {
@@ -61,7 +62,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit/{id}", name="post_edit", requirements={"id": "\d+"})
+     * @Route("/admin/post/edit/{id}", name="post_edit", requirements={"id": "\d+"})
      */
     public function edit($id, Request $request, EntityManagerInterface $em)
     {
@@ -85,6 +86,18 @@ class PostController extends AbstractController
 
         return $this->render('post/edit.html.twig', [
             'formView' => $formView
+        ]);
+    }
+
+    /**
+     * @Route("/admin/post/list", name="post_list")
+     */
+    public function list()
+    {
+        $posts = $this->postRepository->findAll();
+
+        return $this->render("post/list.html.twig", [
+            'posts' => $posts
         ]);
     }
 }
