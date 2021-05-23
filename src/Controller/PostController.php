@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PostController extends AbstractController
 {
@@ -59,9 +61,30 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit", name="post_edit")
+     * @Route("/admin/edit/{id}", name="post_edit", requirements={"id": "\d+"})
      */
-    public function edit()
+    public function edit($id, Request $request, EntityManagerInterface $em)
     {
+        $post = $this->postRepository->find($id);
+
+        if (!$post) {
+            throw new NotFoundHttpException("Ce post n'existe pas");
+        }
+
+        $form = $this->createForm(PostType::class, $post);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            return $this->redirectToRoute('post');
+        }
+
+        $formView = $form->createView();
+
+        return $this->render('post/edit.html.twig', [
+            'formView' => $formView
+        ]);
     }
 }
