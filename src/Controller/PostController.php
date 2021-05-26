@@ -4,44 +4,36 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\File\FileGetter;
 use App\Repository\PostRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
+/**
+ * @Route("/admin/post")
+ * @IsGranted("ROLE_ADMIN", message="Not found")
+ */
 class PostController extends AbstractController
 {
 
     protected $postRepository;
     protected $slugger;
+    protected $fileGetter;
 
-    public function __construct(PostRepository $postRepository, SluggerInterface $slugger)
+    public function __construct(PostRepository $postRepository, SluggerInterface $slugger, FileGetter $fileGetter)
     {
         $this->postRepository = $postRepository;
         $this->slugger = $slugger;
+        $this->fileGetter = $fileGetter;
     }
 
     /**
-     * @Route("/", name="post")
-     */
-    public function index()
-    {
-        $posts = $this->postRepository->findAll();
-
-        return $this->render('post/index.html.twig', [
-            'posts' => $posts
-        ]);
-    }
-
-    /**
-     * @Route("/admin/post/add", name="post_add")
-     * @IsGranted("ROLE_ADMIN", message="Not found")
+     * @Route("/add", name="post_add")
      */
     public function add(Request $request, EntityManagerInterface $em)
     {
@@ -52,17 +44,8 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $img = $form->get('photo')->getData();
-            if ($img) {
-                $img = $form->get('photo')->getData();
-                $title = $this->slugger->slug(mb_strtolower($form->get('title')->getData()));
 
-                $file = $title . "." . $img->guessExtension();
-
-                $img->move($this->getParameter('image_directory'), $file);
-            } else {
-                $file = "https://picsum.photos/400/300";
-            }
+            $file = $this->fileGetter->getFile($form);
             $post->setPhoto($file);
             $em->persist($post);
             $em->flush();
@@ -78,7 +61,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/post/edit/{id}", name="post_edit", requirements={"id": "\d+"})
+     * @Route("/edit/{id}", name="post_edit", requirements={"id": "\d+"})
      */
     public function edit($id, Request $request, EntityManagerInterface $em)
     {
@@ -93,20 +76,8 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $img = $form->get('photo')->getData();
-            if ($img) {
-                $img = $form->get('photo')->getData();
-                $title = $this->slugger->slug(mb_strtolower($form->get('title')->getData()));
 
-                $file = $title . "." . $img->guessExtension();
-
-                $img->move($this->getParameter('image_directory'), $file);
-            } else {
-                if (!stristr($post->getPhoto(), "picsum")) {
-                    unlink($this->getParameter('image_directory') . "/" . $post->getPhoto());
-                }
-                $file = "https://picsum.photos/400/300";
-            }
+            $file = $this->fileGetter->getFile($form, $post);
             $post->setPhoto($file);
             $em->flush();
 
@@ -121,7 +92,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/post/list", name="post_list")
+     * @Route("/list", name="post_list")
      */
     public function list()
     {
@@ -133,7 +104,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/post/delete/{id}", name="post_delete")
+     * @Route("/delete/{id}", name="post_delete")
      */
     public function delete($id, EntityManagerInterface $em)
     {
