@@ -10,10 +10,15 @@
 			{% for p in posts %}
 				<div class="col">
 					<div class="card zoom">
-						<img src="{{ p.photo }}" class="card-img-top" alt="Image">
+						{% if ("picsum" in p.photo) %}
+							<img src="{{ p.photo }}" class="card-img-top" alt="Image">
+						{% else %}
+							<img src="{{ asset("assets/uploads/" ~ p.photo) }}" class="card-img-top" alt="Image">
+						{% endif %}
 						<div class="card-body">
 							<h5 class="card-title">{{ p.title }}</h5>
 							<p class="card-text">{{ p.description }}</p>
+
 							<a href="{{ p.link }}" class="btn btn-primary">Visiter le site</a>
 						</div>
 					</div>

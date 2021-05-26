@@ -4,11 +4,12 @@ namespace App\Form;
 
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class PostType extends AbstractType
 {
@@ -27,17 +28,16 @@ class PostType extends AbstractType
                     'placeholder' => 'Description du site'
                 ]
             ])
-            ->add('link', UrlType::class, [
-                'label' => 'Url du site',
+            ->add('link', TextType::class, [
+                'label' => 'Lien du site',
                 'attr' => [
-                    'placeholder' => 'Url du site'
+                    'placeholder' => 'Lien du site'
                 ]
             ])
-            ->add('photo', UrlType::class, [
-                'label' => 'Url de la photo',
-                'attr' => [
-                    'placeholder' => 'Url de la photo'
-                ]
+            ->add('photo', FileType::class, [
+                'label' => 'Photo',
+                'mapped' => false,
+                'required' => false
             ]);
     }
 
