@@ -95,6 +95,11 @@ class SecurityAuthenticator extends AbstractFormLoginAuthenticator implements Pa
         return $credentials['password'];
     }
 
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        $request->attributes->set(Security::AUTHENTICATION_ERROR, $exception);
+    }
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         return new RedirectResponse('/');
